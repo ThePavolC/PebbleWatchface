@@ -1,0 +1,17 @@
+{
+  "uuid": "ce24be90-29a0-40a8-a518-21b36acf07a4",
+  "shortName": "PebbleWatchFace",
+  "longName": "PebbleWatchFace with as much stuff as I can fit in",
+  "companyName": "Pavol Celuch",
+  "versionCode": 1,
+  "versionLabel": "1.0",
+  "watchapp": {
+    "watchface": true
+  },
+  "appKeys": {
+    "dummy": 0
+  },
+  "resources": {
+    "media": []
+  }
+}
