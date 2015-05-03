@@ -32,4 +32,5 @@
 *.dSYM/
 
 # build
-./build/
+build/
+*_build
