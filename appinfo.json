@@ -12,6 +12,17 @@
     "dummy": 0
   },
   "resources": {
-    "media": []
+    "media": [
+        {
+            "type": "png",
+            "name": "BLUETOOTH_ICON_ACTIVE",
+            "file": "bluetooth-active.png"
+        },
+        {
+            "type": "png",
+            "name": "BLUETOOTH_ICON_INACTIVE",
+            "file": "bluetooth-inactive.png"
+        }
+    ]
   }
 }
