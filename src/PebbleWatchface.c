@@ -8,6 +8,9 @@ static TextLayer *s_day_week_layer;
 static GBitmap *s_bluetooth_bitmap_active;
 static GBitmap *s_bluetooth_bitmap_inactive;
 static BitmapLayer *s_bluetooth_layer;
+static TextLayer *s_bluetooth_time_layer;
+
+static void bluetooth_connection_handler(bool connected);
 
 static void main_window_load(Window *window) {
     Layer *window_layer = window_get_root_layer(window);
@@ -17,14 +20,6 @@ static void main_window_load(Window *window) {
     s_date_layer = text_layer_create(GRect(0, 42, bounds.size.w, 28));
     s_day_week_layer = text_layer_create(GRect(0, 70, bounds.size.w, 26));
 
-    s_bluetooth_bitmap_active = gbitmap_create_with_resource(RESOURCE_ID_BLUETOOTH_ICON_ACTIVE);
-    s_bluetooth_bitmap_inactive = gbitmap_create_with_resource(RESOURCE_ID_BLUETOOTH_ICON_INACTIVE);
-    s_bluetooth_layer = bitmap_layer_create(GRect(0, 100, 22, 22));
-
-    //text_layer_set_text_color(s_time_layer, GColorBlack);
-    //text_layer_set_text_color(s_date_layer, GColorBlack);
-    //text_layer_set_text_color(s_day_week_layer, GColorBlack);
-
     text_layer_set_font(s_time_layer, fonts_get_system_font(FONT_KEY_BITHAM_42_BOLD));
     text_layer_set_font(s_date_layer, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
     text_layer_set_font(s_day_week_layer, fonts_get_system_font(FONT_KEY_GOTHIC_24));
@@ -33,18 +28,21 @@ static void main_window_load(Window *window) {
     text_layer_set_text_alignment(s_date_layer, GTextAlignmentCenter);
     text_layer_set_text_alignment(s_day_week_layer, GTextAlignmentCenter);
 
-    window_set_background_color(s_main_window, GColorWhite);
+    s_bluetooth_bitmap_active = gbitmap_create_with_resource(RESOURCE_ID_BLUETOOTH_ICON_ACTIVE);
+    s_bluetooth_bitmap_inactive = gbitmap_create_with_resource(RESOURCE_ID_BLUETOOTH_ICON_INACTIVE);
+    s_bluetooth_layer = bitmap_layer_create(GRect(0, 100, 22, 22));
+    s_bluetooth_time_layer = text_layer_create(GRect(24, 102, bounds.size.w, 16));
+    text_layer_set_font(s_bluetooth_time_layer, fonts_get_system_font(FONT_KEY_GOTHIC_14));
+    text_layer_set_text(s_bluetooth_time_layer, "00:00");
+    bluetooth_connection_handler(bluetooth_connection_service_peek());
 
-    if (bluetooth_connection_service_peek()) {
-        bitmap_layer_set_bitmap(s_bluetooth_layer, s_bluetooth_bitmap_active);
-    } else {
-        bitmap_layer_set_bitmap(s_bluetooth_layer, s_bluetooth_bitmap_inactive);
-    }
+    window_set_background_color(s_main_window, GColorWhite);
 
     layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_time_layer));
     layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_date_layer));
     layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_day_week_layer));
     layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(s_bluetooth_layer));
+    layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_bluetooth_time_layer));
 }
 
 static void main_window_unload(Window *window) {
@@ -54,6 +52,7 @@ static void main_window_unload(Window *window) {
     gbitmap_destroy(s_bluetooth_bitmap_active);
     gbitmap_destroy(s_bluetooth_bitmap_inactive);
     bitmap_layer_destroy(s_bluetooth_layer);
+    text_layer_destroy(s_bluetooth_time_layer);
 }
 
 static void update_time() {
@@ -91,12 +90,24 @@ static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
 
 static void bluetooth_connection_handler(bool connected) {
     vibes_double_pulse();
-    
+
     if (connected) {
         bitmap_layer_set_bitmap(s_bluetooth_layer, s_bluetooth_bitmap_active);
     } else {
         bitmap_layer_set_bitmap(s_bluetooth_layer, s_bluetooth_bitmap_inactive);
     }
+
+    time_t temp = time(NULL);
+    struct tm *tick_time = localtime(&temp);
+    static char time_buffer[] = "(00:00)";
+
+    if (clock_is_24h_style() == true) {
+        strftime(time_buffer, sizeof("(00:00)"), "(%H:%M)", tick_time);
+    } else {
+        strftime(time_buffer, sizeof("(00:00)"), "(%I:%M)", tick_time);
+    }
+
+    text_layer_set_text(s_bluetooth_time_layer, time_buffer);
 }
 
 static void init() {
