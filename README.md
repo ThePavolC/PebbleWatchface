@@ -9,4 +9,4 @@ I want to see:
  - battery status
  - maybe some more, I don't know yet
 
- ![screenshot](pebble-screenshot_2015-05-04_20-55-02.png)
+ ![screenshot](pebble_screenshot.jpg)
