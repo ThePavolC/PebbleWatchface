@@ -22,6 +22,31 @@
             "type": "png",
             "name": "BLUETOOTH_ICON_INACTIVE",
             "file": "bluetooth-inactive.png"
+        },
+        {
+            "type": "png",
+            "name": "BATTERY_100",
+            "file": "battery-100.png"
+        },
+        {
+            "type": "png",
+            "name": "BATTERY_080",
+            "file": "battery-080.png"
+        },
+        {
+            "type": "png",
+            "name": "BATTERY_060",
+            "file": "battery-060.png"
+        },
+        {
+            "type": "png",
+            "name": "BATTERY_040",
+            "file": "battery-040.png"
+        },
+        {
+            "type": "png",
+            "name": "BATTERY_CHARGING",
+            "file": "battery-000-charging.png"
         }
     ]
   }
