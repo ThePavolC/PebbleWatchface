@@ -18,6 +18,7 @@ static GBitmap *s_battery_charging_bitmap;
 static BitmapLayer *s_battery_layer;
 static TextLayer *s_battery_status_layer;
 
+/* Sets the main time, HH:MM */
 static void update_time() {
     time_t temp = time(NULL);
     struct tm *tick_time = localtime(&temp);
@@ -33,6 +34,9 @@ static void update_time() {
     text_layer_set_text(s_time_layer, time_buffer);
 }
 
+/* Sets the date, Wed 01 Jan 2000.
+ * Sets the day and weak of year, day: 123 week: 22.
+ */
 static void update_date_day_week() {
     time_t temp = time(NULL);
     struct tm *tick_time = localtime(&temp);
@@ -46,11 +50,13 @@ static void update_date_day_week() {
     text_layer_set_text(s_day_week_layer, day_week_buffer);
 }
 
+/* Tick handler. */
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
     update_time();
     update_date_day_week();
 }
 
+/* Bluetooth connection handler, sets icon and last status change time. */
 static void bluetooth_connection_handler(bool connected) {
     vibes_double_pulse();
 
@@ -73,6 +79,7 @@ static void bluetooth_connection_handler(bool connected) {
     text_layer_set_text(s_bluetooth_time_layer, time_buffer);
 }
 
+/* Battery state handler sets icon and percentage. */
 static void battery_state_handler(BatteryChargeState charge_state) {
     static char s_battery_buffer[4];
 
@@ -97,6 +104,7 @@ static void battery_state_handler(BatteryChargeState charge_state) {
     text_layer_set_text(s_battery_status_layer ,s_battery_buffer);
 }
 
+/* Window load handler, sets all text and bitmap layers. */
 static void main_window_load(Window *window) {
     Layer *window_layer = window_get_root_layer(window);
     GRect bounds = layer_get_bounds(window_layer);
@@ -139,6 +147,7 @@ static void main_window_load(Window *window) {
     layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_battery_status_layer));
 }
 
+/* Window unload handler, destroyes and unsibscribes from everything. */
 static void main_window_unload(Window *window) {
     text_layer_destroy(s_time_layer);
     text_layer_destroy(s_date_layer);
@@ -152,6 +161,7 @@ static void main_window_unload(Window *window) {
     battery_state_service_unsubscribe();
 }
 
+/* Window appear handler, updates time, bluetooth and battery layers. */
 static void main_window_appear(Window *window) {
     update_time();
     update_date_day_week();
@@ -165,12 +175,14 @@ static void main_window_appear(Window *window) {
     battery_state_handler(battery_state_service_peek());
 }
 
+/* Window disappear handler, unsubscribes from timers and services. */
 static void main_window_disappear(Window *window) {
     tick_timer_service_unsubscribe();
     bluetooth_connection_service_unsubscribe();
     battery_state_service_unsubscribe();
 }
 
+/* Init */
 static void init() {
     s_main_window = window_create();
 
@@ -184,10 +196,12 @@ static void init() {
     window_stack_push(s_main_window, true);
 }
 
+/* Deinit */
 static void deinit() {
     window_destroy(s_main_window);
 }
 
+/* Main */
 int main(void) {
     init();
     app_event_loop();
