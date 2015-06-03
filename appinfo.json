@@ -1,10 +1,10 @@
 {
   "uuid": "ce24be90-29a0-40a8-a518-21b36acf07a4",
-  "shortName": "PebbleWatchFace",
-  "longName": "PebbleWatchFace with as much stuff as I can fit in",
+  "shortName": "TimeAim",
+  "longName": "TimeAim shows various time and date information. It also shows battery and bluetooth status.",
   "companyName": "Pavol Celuch",
   "versionCode": 1,
-  "versionLabel": "1.0",
+  "versionLabel": "1.1",
   "watchapp": {
     "watchface": true
   },
